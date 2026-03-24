@@ -6,7 +6,7 @@
   <- !calc_bid(gold(X,Y), Bid);
      .my_name(Me);
      //.print("My bid for ",gold(X,Y)," is ",Bid);
-     .send(leader,tell,bid(gold(X,Y),Bid,Me)).
+     .send(skibidy_leader,tell,bid(gold(X,Y),Bid,Me)).
 
 /*
 // bid in case I am going to depot:
@@ -57,7 +57,7 @@ calc_gold_distance([gold(GX,GY)|R],[d(D,gold(GX,GY))|RD])
 // some gold was allocated to me, but I can not
 // handle it anymore, re-announce
 @palloc2[atomic]
-+allocated(Gold,Me)[source(leader)]
++allocated(Gold,Me)[source(skibidy_leader)]
   :  .my_name(Me) &                    // the gold was allocated to me
      not container_has_space           // I no longer have space
   <- .print("I can not handle ",Gold," anymore! (Re)announcing to others");
@@ -85,7 +85,7 @@ calc_gold_distance([gold(GX,GY)|R],[d(D,gold(GX,GY))|RD])
 
 // some gold was allocated to me by the leader.
 @palloc4[atomic]
-+allocated(Gold,Me)[source(leader)]
++allocated(Gold,Me)[source(skibidy_leader)]
   :  .my_name(Me)
   <- .print("Gold ",Gold," allocated to me. (Re)deciding what to do.");
      !choose_goal.
