@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.jason-lang:jason-interpreter:3.3.0'
+}
+
+tasks.register('runJason', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    // mainClass = 'jason.infra.centralised.CentralisedAgentInfrastructure' // old class name (pre 3.3.0)
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    args = ['mars.mas2j']
+}
