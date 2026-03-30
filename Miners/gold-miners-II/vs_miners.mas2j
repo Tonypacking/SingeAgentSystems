@@ -1,0 +1,92 @@
+/*
+ * VS Miners — Quadrant Team vs Original Miner Team
+ *
+ * RED  team (indices 0-5, 6 agents):
+ *   rleader  — original leader logic  (red_leader.asl)
+ *   rminer1-5 — original miner logic  (red_miner.asl)
+ *   Strategy: near_unvisited search + quadrant assignment + full allocation protocol
+ *
+ * BLUE team (indices 6-12, 7 agents):
+ *   leader   — extended coordinator   (leader2.asl)
+ *   miner1-4 — quadrant miners        (quadrant_miner.asl)
+ *   scout1-2 — enemy-following scouts (scout.asl)
+ *   Strategy: explore-first quadrant scan + scout harassment + leader redirection
+ *
+ * Total = 13 agents, agsByTeam = 6 (indices 0-5 = red, 6-12 = blue)
+ *
+ * Run with:  gradle runVs
+ */
+
+MAS vs_miners {
+
+    environment: env.MiningEnvironment(12, 100, yes, "dummy", "miner", 1000)
+        // config 12 = Semiramis map (same as miners.mas2j and advanced_miners.mas2j)
+
+    agents:
+
+        // ── RED team: original sophisticated miners ───────────────────────
+        rleader
+            beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell");
+
+        rminer1
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        rminer2
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        rminer3
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        rminer4
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        rminer5
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        // ── BLUE team: quadrant miners + scouts ───────────────────────────
+        leader
+            beliefBaseClass agent.DiscardBelsBB("my_status","committed_to","cell")
+            agentClass      agent.SelectEvent;
+
+        miner1
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner2
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner3
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner4
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        scout1 [region(right)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        scout2 [region(left)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+    aslSourcePath: "asl";
+}

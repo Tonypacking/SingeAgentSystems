@@ -53,6 +53,14 @@ task run (type: JavaExec, dependsOn: 'classes') {
     classpath sourceSets.main.runtimeClasspath
 }
 
+task runVs (type: JavaExec, dependsOn: 'classes') {
+    group = 'Jason'
+    description 'runs quadrant miners + scouts (blue) vs original miners (red)'
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    args = ['vs_miners.mas2j']
+    classpath sourceSets.main.runtimeClasspath
+}
+
 task runAdvanced (type: JavaExec, dependsOn: 'classes') {
     group = 'Jason'
     description 'runs the advanced multi-role team (quadrant miners + scouts + leader2)'
