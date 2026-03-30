@@ -1,0 +1,75 @@
+/*
+ * Advanced Miners — multi-role team configuration
+ *
+ * Blue team (7 agents):
+ *   leader   — central coordinator (quadrant assignment, gold allocation,
+ *               strategic redirection of scouts and miners)
+ *   miner1-4 — quadrant miners  (explore 10%, then mine; report to leader)
+ *   scout1   — right-region scout (follow enemies, mine on order)
+ *   scout2   — left-region  scout (follow enemies, mine on order)
+ *
+ * Red team (6 agents):
+ *   dummy × 6 — original red-team agents
+ *
+ * Total = 13 agents, agsByTeam = 6 (agents 0-5 = red, 6-12 = blue)
+ *
+ * Run with:  gradle runAdvanced
+ */
+
+MAS advanced_miners {
+
+    environment: env.MiningEnvironment(13, 100, yes, "dummy", "miner", 1000)
+        // args: config-id  sleep-ms  gui  red-prefix  blue-prefix  window-size
+
+    agents:
+
+        // ── Red team ──────────────────────────────────────────────────────
+        dummy agentArchClass arch.LocalMinerArch #6;
+
+        // ── Blue team ─────────────────────────────────────────────────────
+
+        // Central coordinator — no LocalMinerArch (doesn't move)
+        // "picked" is NOT discarded so the leader can react to gold-removal events
+        leader
+            beliefBaseClass agent.DiscardBelsBB("my_status","committed_to","cell")
+            agentClass      agent.SelectEvent;
+
+        // Quadrant miners: one per corner of the map
+        // miner1 → top-left   (quadrant 1)
+        // miner2 → top-right  (quadrant 2)
+        // miner3 → bottom-left  (quadrant 3)
+        // miner4 → bottom-right (quadrant 4)
+        miner1
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner2
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner3
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner4
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        // Scouts — patrol enemy half, mine on leader's order
+        // scout1 = right region,  scout2 = left region
+        scout1 [region(right)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        scout2 [region(left)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+    aslSourcePath: "asl";
+}
