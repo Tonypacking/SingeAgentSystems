@@ -62,7 +62,7 @@ calc_gold_distance([gold(GX,GY)|R],[d(D,gold(GX,GY))|RD])
      not container_has_space           // I no longer have space
   <- .print("I can not handle ",Gold," anymore! (Re)announcing to others");
      .abolish(allocated(Gold,Me));
-     .broadcast(tell,Gold).
+     !my_broadcast(tell,Gold).
 
 // some gold was allocated to me, but I have too much
 // allocations. Choose the worst to discard.
@@ -79,8 +79,8 @@ calc_gold_distance([gold(GX,GY)|R],[d(D,gold(GX,GY))|RD])
      .print("I have too many allocations (",LDS,"), discarting ",GDiscarted1," and ",GDiscarted2,".");
      .abolish(allocated(GDiscarted1,Me));
      .abolish(allocated(GDiscarted2,Me));
-     .broadcast(tell,GDiscarted1);
-     .broadcast(tell,GDiscarted2);
+     !my_broadcast(tell,GDiscarted1);
+     !my_broadcast(tell,GDiscarted2);
      !choose_goal.
 
 // some gold was allocated to me by the leader.

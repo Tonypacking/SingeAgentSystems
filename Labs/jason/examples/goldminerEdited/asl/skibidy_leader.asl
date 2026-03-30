@@ -13,10 +13,8 @@
      +quad(S,3, 0,       CellH,   W div 2 - 1, (CellH * 2)-1);
      +quad(S,4, W div 2, CellH,   W - 1,       (CellH * 2)-1);
 
-     !inform_quad(S,skibidy_miner1,1);
-     !inform_quad(S,skibidy_miner2,2);
-     !inform_quad(S,skibidy_miner3,3);
-     !inform_quad(S,skibidy_miner4,4).
+     !inform_quad(S,skibidy_miner5,1);
+     !inform_quad(S,skibidy_miner6,2).
 
 
 // only informs the quadrant if the depot is not in the quadrant
@@ -72,7 +70,7 @@
 /* negotiation for found gold */
 
 +bid(Gold,D,Ag)
-  :  .count(bid(Gold,_,_),5)  // five bids were received
+  :  .count(bid(Gold,_,_),2)  // two bids received (miner5 + miner6)
   <- //.print("bid from ",Ag," for ",Gold," is ",D);
      !allocate_miner(Gold);
      .abolish(bid(Gold,_,_)).
@@ -84,14 +82,19 @@
      .min(LD,op(DistCloser,Closer));
      DistCloser < 10000;
      .print("Gold ",Gold," was allocated to ",Closer, " options ware ",LD);
-     .broadcast(tell,allocated(Gold,Closer)).
+     !leader_broadcast(tell,allocated(Gold,Closer)).
      //-Gold[source(_)].
 -!allocate_miner(Gold)
   <- .print("could not allocate gold ",Gold).
 
 // if some announce gold, cancel previous allocation
+/* broadcast fix for leader */
++!leader_broadcast(Perf, Content)
+  <- .send(skibidy_miner5, Perf, Content);
+     .send(skibidy_miner6, Perf, Content).
+
 +gold(X,Y)[source(Ag)]
-  <- .broadcast(untell, allocated(gold(X,Y),Ag));
+  <- !leader_broadcast(untell, allocated(gold(X,Y),Ag));
      .abolish(gold(_,_)).
 
 

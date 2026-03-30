@@ -4,7 +4,7 @@
   <- .print("Handling ",gold(X,Y)," now.");
      ?pos(AgX,AgY,_); jia.path_length(AgX,AgY,X,Y,Dist);
      .my_name(MyN);
-     .broadcast(tell, committed_to(gold(X,Y),Dist,MyN));
+     !my_broadcast(tell, committed_to(gold(X,Y),Dist,MyN));
      !pos(X,Y);
      !ensure(pick,0);
      ?carrying_gold(NG);
@@ -12,14 +12,14 @@
      !remove(gold(X,Y));
      // broadcast that I got the gold(X,Y), to avoid someone
      // else to pursue this gold
-     .broadcast(tell,picked(gold(X,Y)));
+     !my_broadcast(tell,picked(gold(X,Y)));
      !!choose_goal.
 
 // if ensure(pick) failed, decide goal
 @fpg[atomic]
 -!fetch_gold(G)
   <- .print("failed to catch gold ",G);
-     .broadcast(untell, committed_to(G,_,_));
+     !my_broadcast(untell, committed_to(G,_,_));
      !remove(G);
      !!choose_goal.
 

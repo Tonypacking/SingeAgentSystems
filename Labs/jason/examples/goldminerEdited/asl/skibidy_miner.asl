@@ -1,5 +1,6 @@
-// miner agent
+// miner agent  (skibidy_miner1-5 = miners, skibidy_miner6 = depot blocker)
 
+{ include("sabotage.asl") }             // blocker overrides — MUST be first
 { include("moving.asl") }               // plans for movements in the scenario
 { include("search_unvisited.asl") }     // plans for finding gold
 { include("search_quadrant.asl") }      // idem
@@ -11,6 +12,12 @@
 
 { register_function("carrying.gold",0,"carrying_gold") }
 { register_function("jia.path_length",4,"jia.path_length") }
+
+/* broadcast fix: replaces .broadcast — sends only to active mining agents */
++!my_broadcast(Perf, Content)
+  <- .send(skibidy_miner5, Perf, Content);
+     .send(skibidy_miner6, Perf, Content);
+     .send(skibidy_leader, Perf, Content).
 
 /* beliefs */
 
@@ -29,7 +36,7 @@ search_gold_strategy(near_unvisited). // initial strategy
      !inform_gsize_to_leader(S);
      !choose_goal.
 
-+!inform_gsize_to_leader(S) : .my_name(skibidy_miner1)
++!inform_gsize_to_leader(S) : .my_name(skibidy_miner5)
    <- ?depot(S,DX,DY);
       .send(skibidy_leader,tell,depot(S,DX,DY));
       ?gsize(S,W,H);
@@ -177,7 +184,7 @@ worthwhile(gold(GX,GY)) :-
   <- +gold(X,Y);
      +announced(gold(X,Y));
      .print("Announcing ",gold(X,Y)," to others");
-     .broadcast(tell,gold(X,Y)).
+     !my_broadcast(tell,gold(X,Y)).
 
 // If I see an empty cell where it was supposed to be gold, announce it to others
 +cell(X,Y,empty)
@@ -185,7 +192,7 @@ worthwhile(gold(GX,GY)) :-
      not .desire(fetch_gold(gold(X,Y))) // in this case, I empty the cell!
   <- !remove(gold(X,Y));
      .print("The gold at ",X,",",Y," was picked by someone else! Announcing to others.");
-     .broadcast(tell,picked(gold(X,Y))).
+     !my_broadcast(tell,picked(gold(X,Y))).
 
 
 /* end of a simulation */

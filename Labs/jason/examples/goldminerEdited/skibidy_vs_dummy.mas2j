@@ -9,7 +9,7 @@
  */
 
 MAS miners {
-    environment: env.MiningEnvironment(11, 100, yes, "dummy", "miner", 1000)
+    environment: env.MiningEnvironment(11, 100, yes, "dummy", "skibidy_miner", 1000)
         // parameters: 1. environment configuration id (from 1 to 13)
         //                   11 is Fence in 2007 Contest
         //                   12 is Semiramis in 2007 Contest
@@ -24,11 +24,14 @@ MAS miners {
         // red team
         dummy agentArchClass arch.LocalMinerArch #6;
 
-        // blue team
-        leader
+        // blue team (skibidy)
+        // skibidy_leader: pure coordinator, not a physical agent in the world
+        skibidy_leader
                beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell");
 
-        miner  //[teamSize=6]
+        // skibidy_miner1-6: physical agents
+        // miner6 runs sabotage.asl behavior (depot blocker)
+        skibidy_miner
                agentClass agent.SelectEvent
                beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
                agentArchClass arch.LocalMinerArch

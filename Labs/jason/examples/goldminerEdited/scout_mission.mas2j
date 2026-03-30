@@ -1,0 +1,34 @@
+/*
+ * Scout Mission — goldminerEdited
+ *
+ * Blue team strategy:
+ *   scout_leader  : coordinator (logical, not on the grid)
+ *   scout_miner1-4: each assigned one quadrant; scout it and call for backup
+ *                   when >= 2 golds are found inside it
+ *   scout_miner5-6: free searchers; redirect to any rich quadrant announced
+ *
+ * Red team: 6 dummy agents (opponent)
+ */
+
+MAS miners {
+    environment: env.MiningEnvironment(11, 100, yes, "dummy", "scout_miner", 1000)
+        // args: world-id  sleep-ms  gui  red-team-name  blue-team-name  window-px
+
+    agents:
+        // red team (opponent)
+        dummy agentArchClass arch.LocalMinerArch #6;
+
+        // blue team — coordinator (logical agent, not on the grid)
+        scout_leader
+               beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell");
+
+        // blue team — 6 physical miners (scout_miner1 … scout_miner6)
+        // miner1-4 get quadrants; miner5-6 are free until a rich quadrant is announced
+        scout_miner
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch
+               #6;
+
+    aslSourcePath: "asl";
+}

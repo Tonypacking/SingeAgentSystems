@@ -6,6 +6,9 @@
      // announce to others all golds I perceived that are not handled/announced yet
      .findall(gold(X,Y),gold(X,Y)[source(self)],L);
      !announce_not_handled_golds(L);
+     // approach from 2 cells north so miner4 (north blocker) yields for us
+     NorthY = DY - 2;
+     !pos(DX, NorthY);
      !pos(DX,DY);
      !ensure(drop,0);
      !leave_depot;
@@ -18,7 +21,7 @@
 +!announce_not_handled_golds([G|R])
    :  not committed_to(G,_) & not announced(G)
    <- .print("Announcing ",G, ", since I am going to depot and that gold was not handled by me (although I perceived it).");
-      .broadcast(tell,G);
+      !my_broadcast(tell,G);
       +announced(G);
       !announce_not_handled_golds(R).
 +!announce_not_handled_golds([_|R])
