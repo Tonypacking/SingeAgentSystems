@@ -207,7 +207,11 @@ public class MinerArch extends AgArch {
             if (!getAgName().equals(oname)) {
                 Message msg = new Message(m);
                 msg.setReceiver(oname);
-                sendMsg(msg);
+                try {
+                    sendMsg(msg);
+                } catch (Exception e) {
+                    logger.log(Level.FINE, "Could not yet send broadcast message to "+oname, e);
+                }
             }
         }
     }

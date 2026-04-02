@@ -8,6 +8,9 @@ import jason.asSyntax.Term;
 import jason.environment.TimeSteppedEnvironment;
 import jason.environment.grid.Location;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +47,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
     int                     windowSize = 800;
 
     int                     finishedAt = 0; // cycle where all golds was collected
+    boolean                 resultWritten = false;
 
     String                  redTeamName, blueTeamName;
 
@@ -136,6 +140,8 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
     public void initWorld(int w) {
         simId = w;
+        finishedAt = 0;
+        resultWritten = false;
         try {
             switch (w) {
             case 1:
@@ -182,7 +188,8 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
                 return;
             }
 
-            super.init(new String[] { "1000" } ); // set step timeout
+            String stepTimeout = System.getProperty("goldminers.step.timeout.ms", "1000");
+            super.init(new String[] { stepTimeout } ); // set step timeout
             updateNumberOfAgents();
 
             // add perception for all agents
@@ -293,7 +300,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
     public void startNewWorld(int w) {
         addPercept(Literal.parseLiteral("end_of_simulation(" + simId + ",0)"));
         if (view != null) view.setVisible(false);
-        nextWorld = new Integer(w);
+        nextWorld = Integer.valueOf(w);
     }
 
     // some customisation for cycled environment
@@ -314,12 +321,17 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
         sum += time;
         logger.info("Cycle "+step+" finished in "+time+" ms, mean is "+(sum/step)+".");
+        if (step % 100 == 0) {
+            System.out.println("MATCH_STEP world="+simId+" step="+step);
+        }
 
         // test end of match
         try {
             if (step >= model.getMaxSteps() && model.getMaxSteps() > 0) {
                 String msg = "Finished at the maximal number of steps! Red x Blue = "+model.getGoldsInDepotRed() + " x "+model.getGoldsInDepotBlue();
                 logger.info("** "+msg);
+                System.out.println("MATCH_RESULT reason=max_steps world="+simId+" step="+step+" red="+model.getGoldsInDepotRed()+" blue="+model.getGoldsInDepotBlue());
+                writeResult("max_steps", step, msg);
                 if (hasGUI) {
                     JOptionPane.showMessageDialog(null, msg);
                 }
@@ -329,6 +341,8 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
                 finishedAt = getStep();
                 String msg = "All golds collected in "+finishedAt+" cycles! Result (red x blue) = "+model.getGoldsInDepotRed() + " x "+model.getGoldsInDepotBlue();
                 logger.info("** "+msg);
+                System.out.println("MATCH_RESULT reason=all_gold world="+simId+" step="+finishedAt+" red="+model.getGoldsInDepotRed()+" blue="+model.getGoldsInDepotBlue());
+                writeResult("all_gold", finishedAt, msg);
                 if (hasGUI) {
                     JOptionPane.showMessageDialog(null, msg);
                 }
@@ -341,6 +355,31 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         if (nextWorld != null) {
             initWorld(nextWorld.intValue());
             nextWorld = null;
+        }
+    }
+
+    private void writeResult(String reason, int step, String message) {
+        if (resultWritten) {
+            return;
+        }
+        resultWritten = true;
+        String resultFile = System.getProperty("goldminers.result.file");
+        if (resultFile == null || resultFile.isBlank()) {
+            return;
+        }
+        String content =
+                "reason=" + reason + "\n" +
+                "world=" + simId + "\n" +
+                "step=" + step + "\n" +
+                "red_team=" + redTeamName + "\n" +
+                "blue_team=" + blueTeamName + "\n" +
+                "red=" + model.getGoldsInDepotRed() + "\n" +
+                "blue=" + model.getGoldsInDepotBlue() + "\n" +
+                "message=" + message + "\n";
+        try {
+            Files.writeString(Path.of(resultFile), content, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Could not write match result file "+resultFile, e);
         }
     }
 }

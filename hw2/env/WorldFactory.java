@@ -484,10 +484,11 @@ public class WorldFactory  {
         // obstacles
         int[] ox = getArray(fence, "obstaclePositionX");
         int[] oy = getArray(fence, "obstaclePositionY");
-        for (int i=0; i<gx.length; i++) {
+        for (int i=0; i<ox.length; i++) {
             model.add(WorldModel.OBSTACLE, ox[i], oy[i]);
         }
 
+        model.setInitialNbGolds(model.countObjects(WorldModel.GOLD));
 
         return model;
     }
