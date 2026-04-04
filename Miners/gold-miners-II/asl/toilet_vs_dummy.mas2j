@@ -1,0 +1,50 @@
+MAS miners {
+    // Environment parameters: world_seed(11), sleep_ms(10), GUI(yes), red_team("toilet"), blue_team("dummy"), max_steps(1000)
+    environment: env.MiningEnvironment(11, 10, yes, "toilet", "dummy", 1000)
+
+    agents:
+        // --- RED TEAM: toilet ---
+        toiletleader toiletleader.asl
+               beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell")
+               ;
+
+        toilet1 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        
+        toilet2 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        
+        toilet3 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        
+        toilet4 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        
+        toilet5 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        
+        toilet6 toiletminer.asl
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+
+        // --- BLUE TEAM: dummy ---
+        dummy1 dummy.asl agentArchClass arch.LocalMinerArch;
+        dummy2 dummy.asl agentArchClass arch.LocalMinerArch;
+        dummy3 dummy.asl agentArchClass arch.LocalMinerArch;
+        dummy4 dummy.asl agentArchClass arch.LocalMinerArch;
+        dummy5 dummy.asl agentArchClass arch.LocalMinerArch;
+        dummy6 dummy.asl agentArchClass arch.LocalMinerArch;
+
+    aslSourcePath: "asl";
+}

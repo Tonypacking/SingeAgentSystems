@@ -1,0 +1,21 @@
+MAS miners {
+    environment: env.MiningEnvironment(12, 100, yes, "apex", "dummy", 1000)
+
+    agents:
+        // red team
+        apex apex.asl
+             agentClass agent.SelectEvent
+             beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+             agentArchClass arch.LocalMinerArch
+             #6;
+
+        // blue team
+        dummy dummy.asl
+              agentArchClass arch.LocalMinerArch
+              #6;
+
+    classpath: "build/classes/java/main";
+               "lib/search.jar";
+
+    aslSourcePath: "asl";
+}
