@@ -1,0 +1,78 @@
+/*
+ * EASY TEST — your new agents vs the simplest possible opponents.
+ *
+ * MATCH:  dummy (red)  vs  quadrant miners + scouts (blue)
+ *
+ * RED  team (6 agents): dummy × 6
+ *   Simple reactive agents (dummy.asl).
+ *   No coordination, no pathfinding beyond one-step direction.
+ *
+ * BLUE team (7 agents): leader2 + miner1-4 + scout1-2
+ *   leader2  — extended coordinator (leader2.asl):
+ *                assigns quadrants, allocates gold, dispatches scouts,
+ *                redirects miners with low gold to richer quadrants.
+ *   miner1-4 — quadrant miners (quadrant_miner.asl):
+ *                explore their corner for the first 10% of steps,
+ *                then switch to mining; report lot-of-gold to leader.
+ *   scout1   — right-region scout (scout.asl): follows enemies, mines on order.
+ *   scout2   — left-region  scout (scout.asl): follows enemies, mines on order.
+ *
+ * PURPOSE: verify your agents work correctly before the real challenge.
+ *
+ * Run with:  gradle runAdvanced
+ */
+
+MAS advanced_miners {
+
+    environment: env.MiningEnvironment(13, 100, yes, "dummy", "miner", 1000)
+        // args: config-id  sleep-ms  gui  red/blue-label(display only)  window-size
+
+    agents:
+
+        // ── RED team — simple reactive agents (dummy.asl) ─────────────────
+        dummy agentArchClass arch.LocalMinerArch #6;
+
+        // ── BLUE team — your quadrant miners + scouts ─────────────────────
+
+        // Central coordinator — no LocalMinerArch (doesn't move on the map)
+        leader
+            beliefBaseClass agent.DiscardBelsBB("my_status","committed_to","cell")
+            agentClass      agent.SelectEvent;
+
+        // Quadrant miners: one per corner of the map
+        // miner1 → top-left      miner2 → top-right
+        // miner3 → bottom-left   miner4 → bottom-right
+        miner1
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner2
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner3
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        miner4
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        // Scouts — follow enemies and mine on leader's order
+        // scout1 = right half,  scout2 = left half
+        scout1 [region(right)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+        scout2 [region(left)]
+            agentClass      agent.SelectEvent
+            beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+            agentArchClass  arch.LocalMinerArch;
+
+    aslSourcePath: "asl";
+}

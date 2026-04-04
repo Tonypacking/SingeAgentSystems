@@ -1,0 +1,49 @@
+/*
+ * ORIGINAL EXAMPLE — unchanged from the 2007 contest baseline.
+ *
+ * MATCH:  dummy (red)  vs  original sophisticated miner (blue)
+ *
+ * RED  team (6 agents): dummy × 6
+ *   Simple reactive agents (dummy.asl).
+ *   Pick up adjacent gold, go to depot, random walk.
+ *   No coordination, no pathfinding beyond one-step direction.
+ *
+ * BLUE team (7 agents): leader + miner × 6
+ *   Full allocation protocol with A* pathfinding (miner.asl + leader.asl).
+ *   Leader assigns quadrants and arbitrates gold allocation via bidding.
+ *
+ * PURPOSE: baseline — shows how much better the original miner is vs dummy.
+ *
+ * Run with:  gradle run
+ *
+ * By Jomi & Rafael (Multi-Agent Programming Contest 2007)
+ */
+
+MAS miners {
+    environment: env.MiningEnvironment(12, 100, yes, "dummy", "miner", 1000)
+        // parameters: 1. environment configuration id (from 1 to 13)
+        //                   11 is Fence in 2007 Contest
+        //                   12 is Semiramis in 2007 Contest
+        //                   13 is Overkill in 2007 Contest
+        //             2. sleep time (in ms) after each action
+        //             3. whether display the gui
+        //             4. red/blue team label (display only, does not affect assignment)
+        //             5. red/blue team label (display only, does not affect assignment)
+        //             6. window size
+
+    agents:
+        // RED team — simple reactive agents (dummy.asl)
+        dummy agentArchClass arch.LocalMinerArch #6;
+
+        // BLUE team — original sophisticated miners (miner.asl + leader.asl)
+        leader
+               beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell");
+
+        miner  //[teamSize=6]
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch
+               #6;
+
+    aslSourcePath: "asl";
+}
