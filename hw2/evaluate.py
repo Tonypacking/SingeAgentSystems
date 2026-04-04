@@ -113,6 +113,72 @@ STRATEGIES = {
                agentArchClass arch.LocalMinerArch;
         """,
     },
+    "adv": {
+        "team_prefix": "adv",
+        "agents": """
+        advleader
+               beliefBaseClass agent.DiscardBelsBB("my_status","committed_to","cell")
+               ;
+
+        adv1
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        adv2
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        adv3
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        adv4
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        adv5
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        adv6
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        """,
+    },
+    "q6quadrant": {
+        "team_prefix": "q6",
+        "agents": """
+        q6leader
+               beliefBaseClass agent.DiscardBelsBB("my_status","committed_to","cell")
+               ;
+
+        q6m1
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        q6m2
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        q6m3
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        q6m4
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        q6m5
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        q6m6
+               agentClass agent.SelectEvent
+               beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
+               agentArchClass arch.LocalMinerArch;
+        """,
+    },
 }
 
 
